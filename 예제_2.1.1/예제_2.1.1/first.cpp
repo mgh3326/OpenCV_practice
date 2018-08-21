@@ -3,20 +3,23 @@ using namespace cv;
 using namespace std;
 int main()
 {
-	Mat image1(300, 400, CV_8U, Scalar(255));
-	Mat image2(300, 400, CV_8U, Scalar(100));
-	string  title1 = "white창 제어";
-	string  title2 = "gray 창 제어";
+	Scalar white(255, 255, 255), yellow(0, 255, 255), blue(255, 0, 0);
+	Scalar red = Scalar(0, 0, 255);
+	Scalar green = Scalar(0, 255, 0);
 
-	namedWindow(title1, WINDOW_AUTOSIZE);
-	namedWindow(title2, WINDOW_NORMAL);
-	moveWindow(title1, 100, 200);
-	moveWindow(title2, 300, 200);
+	Mat image(400, 600, CV_8UC3, white);
+	Point pt1(50, 130), pt2(200, 300), pt3(300, 150), pt4(400, 50);
+	Rect  rect(pt3, Size(200, 150));
 
-	imshow(title1, image1);
-	imshow(title2, image2);
-	waitKey();
-	destroyAllWindows();
+	line(image, pt1, pt2, red);
+	line(image, pt3, pt4, green, 2, LINE_AA);
+	line(image, pt3, pt4, green, 3, LINE_8, 1);
 
+	rectangle(image, rect, blue, 2);
+	rectangle(image, rect, blue, FILLED, LINE_4, 1);
+	rectangle(image, pt1, pt2, red, 3);
+
+	imshow("직선 & 사각형", image);
+	waitKey(0);
 	return 0;
 }

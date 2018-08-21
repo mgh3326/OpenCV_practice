@@ -2,27 +2,27 @@
 using namespace cv;
 using namespace std;
 
-void onMouse(int, int, int, int, void *);		// ¸¶¿ì½º ÄÝ¹é ÇÔ¼ö
+void onMouse(int, int, int, int, void *);		// ï¿½ï¿½ï¿½ì½º ï¿½Ý¹ï¿½ ï¿½Ô¼ï¿½
 
 int main()
 {
 	Mat image(200, 300, CV_8U);
-	image.setTo(255);							// image Çà·Ä ÃÊ±âÈ­ - Èò»ö ¹ÙÅÁ
-	imshow("¸¶¿ì½º ÀÌº¥Æ®1", image);
-	imshow("¸¶¿ì½º ÀÌº¥Æ®2", image);
+	image.setTo(255);							// image ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ - ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	imshow("ï¿½ï¿½ï¿½ì½º ï¿½Ìºï¿½Æ®1", image);
+	imshow("ï¿½ï¿½ï¿½ì½º ï¿½Ìºï¿½Æ®2", image);
 
-	setMouseCallback("¸¶¿ì½º ÀÌº¥Æ®1", onMouse, 0);
+	setMouseCallback("ï¿½ï¿½ï¿½ì½º ï¿½Ìºï¿½Æ®1", onMouse, 0);
 	waitKey(0);
 	return 0;
 }
 
 void onMouse(int event, int x, int y, int flags, void * param)
 {
-	switch (event)			//switch¹®À¸·Î event°ª¿¡ µû¶ó ¹öÆ° Á¾·ù¸¦ ±¸ºÐ
+	switch (event)			//switchï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ eventï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
-	case EVENT_LBUTTONDOWN:	cout << "¸¶¿ì½º ¿ÞÂÊ¹öÆ° ´©¸£±â" << endl;	break;
-	case EVENT_RBUTTONDOWN:	cout << "¸¶¿ì½º ¿À¸¥ÂÊ¹öÆ° ´©¸£±â" << endl;	break;
-	case EVENT_RBUTTONUP:	cout << "¸¶¿ì½º ¿À¸¥ÂÊ¹öÆ° ¶¼±â" << endl;	break;
-	case EVENT_LBUTTONDBLCLK: cout << "¸¶¿ì½º ¿ÞÂÊ¹öÆ° ´õºíÅ¬¸¯" << endl;	break;
+	case EVENT_LBUTTONDOWN:	cout << "ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½Ê¹ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" << endl;	break;
+	case EVENT_RBUTTONDOWN:	cout << "ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" << endl;	break;
+	case EVENT_RBUTTONUP:	cout << "ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Æ° ï¿½ï¿½ï¿½ï¿½" << endl;	break;
+	case EVENT_LBUTTONDBLCLK: cout << "ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½Ê¹ï¿½Æ° ï¿½ï¿½ï¿½ï¿½Å¬ï¿½ï¿½" << endl;	break;
 	}
 }
