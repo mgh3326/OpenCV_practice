@@ -16,7 +16,7 @@ void  print_matInfo(string name, Mat img)
 	else if (depth == CV_64F) str = "CV_64F";
 
 	cout << name;
-	cout << format(": depth(%d) channels(%d) -> ÀÚ·áÇü: ", depth, img.channels());
+	cout << format(": depth(%d) channels(%d) -> ìë£Œí˜•: ", depth, img.channels());
 	cout << str << "C" << img.channels() << endl;
 }
 
@@ -25,10 +25,10 @@ int main()
 	string filename1 = "../image/read_gray.jpg";
 	Mat gray2gray = imread(filename1, IMREAD_GRAYSCALE);
 	Mat gray2color = imread(filename1, IMREAD_COLOR);
-	CV_Assert(gray2gray.data && gray2color.data); // »çÁø ¾øÀ¸¸é ¶ß´Â°Ç°¡ º¸´ç
+	CV_Assert(gray2gray.data && gray2color.data); // ì‚¬ì§„ ì—†ìœ¼ë©´ ëœ¨ëŠ”ê±´ê°€ ë³´ë‹¹
 
 	Rect roi(100, 100, 1, 1);
-	cout << "Çà·Ä ÁÂÇ¥ (100,100) È­¼Ò°ª " << endl;
+	cout << "í–‰ë ¬ ì¢Œí‘œ (100,100) í™”ì†Œê°’ " << endl;
 	cout << "gray2gray " << gray2gray(roi) << endl;
 	cout << "gray2color " << gray2color(roi) << endl << endl;
 
