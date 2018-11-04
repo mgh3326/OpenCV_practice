@@ -1,6 +1,9 @@
 #include <opencv2/opencv.hpp>
+#include <vector>
+
 using namespace cv;
 using namespace std;
+
 
 Mat  preprocessing(Mat image)
 {
@@ -29,19 +32,129 @@ bool vertify_plate(RotatedRect mr)
 
 	return  ch1 && ch2;
 }
+void stainDetect(Mat temp,Mat img,int i,int j,vector<Point> & coordinate)
+{
+	if ((int)temp.at<uchar>(i, j) != 0)
+		return;
+	coordinate.push_back(Point(j, i));
 
-void find_candidates(Mat img, vector<RotatedRect>& candidates)
+
+	/*cout << j << " " << i << endl;*/
+	temp.at<uchar>(i, j) = 255;//상하 좌우
+
+	if (i != 0)
+		if ((int)img.at<uchar>(i - 1, j) != 0)//상
+		{
+			stainDetect(temp, img,  i-1, j, coordinate);
+
+		}
+	if (j != 0)
+		if ((int)img.at<uchar>(i, j - 1) != 0)//좌
+		{
+			stainDetect(temp, img, i, j-1, coordinate);
+
+		}
+	if (i + 1 == img.rows)//예외처리
+		return;
+	if ((int)img.at<uchar>(i + 1, j) != 0)//하
+	{
+		stainDetect(temp, img,  i + 1, j, coordinate);
+
+	}
+	if (j + 1 == img.cols)//예외처리
+		return;
+	if ((int)img.at<uchar>(i, j + 1) != 0)//상
+	{
+		stainDetect(temp, img, i , j+1, coordinate);
+
+	}
+}
+void find_candidates(Mat img, vector<RotatedRect>& candidates,Mat ori)
 {
 	vector< vector< Point> > contours;				// 외곽선
 // 외곽선 검출
+	Mat temp;
+	temp = img.clone();//이미지 복사
+	temp.setTo(cv::Scalar(0, 0, 0));//0값을 넣어줌
+	int count = 0;
+
+	vector< vector< Point> > mycontours;				// 외곽선
+
+	for(int i=0;i<img.rows;i++)
+	{
+		for (int j = 0; j < img.cols; j++)
+		{
+			if ((int)temp.at<uchar>(i, j) != 0)
+				continue;
+			if ((int)img.at<uchar>(i, j))//검은색 외적인게 검출될 경우
+			{
+				vector<Point> temp2;
+
+				stainDetect(temp, img, i, j,temp2);
+				mycontours.push_back(temp2);
+
+				count++;
+				//좌
+				//우
+			}
+			
+		}
+	}
+	cout << count << endl;
+	vector< vector< Point> > ohmyvector;				// 외곽선
+
+	for(int i=0;i<mycontours.size();i++)
+	{
+		vector<Point> temp2;
+		temp2.push_back(mycontours[i][0]);
+		for(int j=1;j< mycontours[i].size();j++)//처음껀 일단 넣고
+		{
+			if(mycontours[i][j-1].x- mycontours[i][j].x!=0)
+			{
+				if(temp2.size()>1)
+				{
+					if (temp2[temp2.size() - 2].y - mycontours[i][j].y == 0&& temp2[temp2.size() - 1].y - mycontours[i][j].y == 0)
+					{
+						temp2.pop_back();
+						temp2.push_back(mycontours[i][j]);
+
+					}
+					else
+					{
+						temp2.push_back(mycontours[i][j]);
+
+					}
+
+				}
+				else
+				{
+					temp2.push_back(mycontours[i][j]);
+
+				}
+				
+
+			}
+			
+
+		}
+		ohmyvector.push_back(temp2);
+	}
 	findContours(img.clone(), contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
-	for (int i = 0; i < (int)contours.size(); i++)	// 검출 외곽선 조회
+	for (int i = 0; i < (int)ohmyvector.size(); i++)	// 검출 외곽선 조회
 	{
-		RotatedRect  rot_rect = minAreaRect(contours[i]);	// 외곽선 최소영역 회전사각형
+		drawContours(ori, ohmyvector, i, Scalar(0, 255, 255), 2, 8, 0, 0, Point());
+
+		RotatedRect  rot_rect = minAreaRect(ohmyvector[i]);	// 외곽선 최소영역 회전사각형
 		if (vertify_plate(rot_rect))						// 번호판 검증
+		{
 			candidates.push_back(rot_rect);				// 회전사각형 저장
+
+
+		}
 	}
+	imwrite("output.jpg", ori);
+
 }
 void  refine_candidate(Mat image, RotatedRect& candi)
 {
@@ -115,16 +228,17 @@ vector<Mat> make_candidates(Mat image, vector<RotatedRect>& candidates)
 int main()
 {
 	int car_no;
-	cout << "차량 영상 번호 (0-20) : ";
+	/*cout << "차량 영상 번호 (0-20) : ";
 	cin >> car_no;
 
-	string fn = format("../image/test_car/%02d.jpg", car_no);
+	string fn = format("../image/test_car/%02d.jpg", car_no);*/
+	string fn = format("../image/02.jpg");
 	Mat image = imread(fn, 1);
 	CV_Assert(image.data);
 
 	Mat morph = preprocessing(image);
 	vector<RotatedRect> candidates;
-	find_candidates(morph, candidates);
+	find_candidates(morph, candidates,image);
 
 	vector<Mat> candidate_img = make_candidates(image, candidates);
 
@@ -133,7 +247,7 @@ int main()
 		imshow("후보영상- " + to_string(i), candidate_img[i]);
 		resizeWindow("후보영상- " + to_string(i), 200, 40);		//윈도우 크기 조정
 	}
-	imshow("image - " + to_string(car_no), image);
+	imshow("image - " + to_string(1), image);
 	waitKey();
 	return 0;
 }
